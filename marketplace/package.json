@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Miskaab/chevrolet-marketplace#readme",
+  "bugs": {
+    "url": "https://github.com/Miskaab/chevrolet-marketplace/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Miskaab/chevrolet-marketplace.git"
+  },
+  "license": "ISC",
+  "author": "Anton Kiili",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.102.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
