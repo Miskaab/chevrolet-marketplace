@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import AddCar from './components/AddCar.jsx'
-import Cart from './components/Cart.jsx'
-import Login from './components/Login.jsx'
+import AddCar from '/components/AddCar.jsx'
+import Cart from '/components/Cart.jsx'
+import Login from '/components/Login.jsx'
 
 
 function App() {
   const [cars, setCars] = useState([])
 
   useEffect(() => {
-    axios.get('')
+    axios.get('http://localhost:3001/api/basics')
       .then(response => {
         setCars(response.data)
       })
