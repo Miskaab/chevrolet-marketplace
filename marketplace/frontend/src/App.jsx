@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import AddCar from './components/AddCar'
-import Cart from './components/Cart'
-import Login from './components/Login'
+import AddCar from './components/AddCar.jsx'
+import Cart from './components/Cart.jsx'
+import Login from './components/Login.jsx'
 
 
 function App() {
