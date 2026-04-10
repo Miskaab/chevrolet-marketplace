@@ -45,9 +45,10 @@ function AddCar() {
           power: power,
           top_speed: parseInt(topSpeed),
           acceleration: acceleration,
-          fuel_consumption: fuelConsumption 
+          fuel_consumption: fuelConsumption,
+          weight: weight
         }
-
+        
         
         return axios.post('http://localhost:3001/api/specifications', specData)
           .then(() => {

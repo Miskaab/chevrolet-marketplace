@@ -41,6 +41,7 @@ function App() {
           <div className="modal" onClick={(event) => event.stopPropagation()}>
             <img src={selectedCar.image_url} alt={selectedCar.model} width="500" />
             <h2>{selectedCar.model}</h2>
+            <h3>Perustiedot</h3>
             <p>Hinta: {selectedCar.price}€</p>
             <p>Vuosimalli: {selectedCar.year_model}</p>
             <p>Mittarilukema: {selectedCar.mileage} km</p>
