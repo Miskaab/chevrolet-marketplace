@@ -38,11 +38,11 @@ app.post('/api/basics/', async (request, response) => {
 });
 
 app.post('/api/specifications/', async (request, response) => {
-  const { BasicID, power, acceleration, top_speed, fuel_consumptions } = request.body;
+  const { BasicID, power, acceleration, top_speed, fuel_consumption, weight } = request.body;
 
   const { data, error } = await supabase
     .from('Specifications')
-    .insert([{ BasicID: BasicID, power: power, acceleration: acceleration, top_speed: top_speed, fuel_consumptions: fuel_consumptions }])
+    .insert([{ BasicID: BasicID, power: power, acceleration: acceleration, top_speed: top_speed, fuel_consumption: fuel_consumption, weight: weight }])
     .select()
     .single();
 
