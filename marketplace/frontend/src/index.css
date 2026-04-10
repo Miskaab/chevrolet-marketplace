@@ -1,3 +1,13 @@
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  padding: 20px 40px;
+}
+
+
 .overlay {
   position: fixed;
   top: 0;
@@ -18,12 +28,6 @@
   width: 90%;
 }
 
-.car-card {
-  cursor: pointer;
-  margin-bottom: 20px;
-  max-width: 300px;
-}
-
 .details-container {
   display: flex;
   gap: 40px;
@@ -32,4 +36,36 @@
 
 .details-section {
   flex: 1;
+}
+
+.car-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px; 
+  width: 100%;
+}
+
+.car-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.car-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.car-card:hover {
+  transform: scale(1.03);
+  transition: 0.2s;
+}
+
+.title {
+    align-items: center;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }

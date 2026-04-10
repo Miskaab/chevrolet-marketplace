@@ -31,22 +31,20 @@ function App() {
 
   return (
     <div>
-      <h1>Chevrolet Marketplace</h1>
+      <h1 className='title'>Chevrolet Marketplace</h1>
 
-      <div>
-        {cars.map(car => (
-          <div
-            key={car.BasicID}
-            onClick={() => setSelectedCar(car)}
-            className="car-card"
-          >
-            <img src={car.image_url} alt={car.model} width="400" />
-            <h3>{car.model} - {car.price}€</h3>
-            <button onClick={() => addToCart(car)}>
-              Lisää ostoskoriin
-            </button>
-          </div>
-        ))}
+      <div className='container'>
+        <div className='car-list'>
+          {cars.map(car => (
+            <div key={car.BasicID} onClick={() => setSelectedCar(car)} className="car-card">
+              <img src={car.image_url} alt={car.model} />
+              <h3>{car.model} - {car.price}€</h3>
+              <button onClick={() => addToCart(car)}>
+                Lisää ostoskoriin
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
       {selectedCar && (
