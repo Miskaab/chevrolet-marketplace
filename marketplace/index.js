@@ -8,16 +8,23 @@ require('dotenv').config();
 app.use(express.json())
 app.use(cors())
 
-app.get('/api/basics/', async (request, response) => {
-  const { data, error } = await supabase.from('Basics').select('*');
+app.get('/api/basics', async (request, response) => {
+  const { data, error } = await supabase
+    .from('Basics')
+    .select(`
+      *,
+      Specifications (*),
+      Features (*)
+    `)
 
   if (error) {
-    console.error('Error fetching basics', error);
-    return response.status(500).json({ error: 'Database error' });
+    console.error('Error fetching basics', error)
+    return response.status(500).json({ error: 'Database error' })
   }
 
-  response.json(data);
-});
+  response.json(data)
+})
+
 
 
 app.post('/api/basics/', async (request, response) => {
