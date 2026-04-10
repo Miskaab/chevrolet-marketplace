@@ -48,7 +48,15 @@ function App() {
             <p>Moottori: {selectedCar.engine}</p>
             <p>Vaihteisto: {selectedCar.gearbox}</p>
             <p>Väri: {selectedCar.color}</p>
+            <h3>Tekniset tiedot</h3>
             <p>Vetotapa: {selectedCar.drive_type}</p>
+            <p>Teho: {selectedCar.Specifications.power}</p>
+            <p>Huippunopeus: {selectedCar.Specifications.top_speed }</p>
+            <p>Kulutus: {selectedCar.Specifications.fuel_consumption }</p>
+            <p>Kiihtyvyys: {selectedCar.Specifications.acceleration }</p>
+            <p>Paino: {selectedCar.Specifications.weight }</p>
+            <h3>Muuta</h3>
+            <p>Lisätiedot: {selectedCar.Features.notes }</p>
 
             <button onClick={() => setSelectedCar(null)}>Sulje</button>
           </div>
