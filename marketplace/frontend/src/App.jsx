@@ -38,7 +38,7 @@ function App() {
 
       {selectedCar && (
         <div className="overlay" onClick={() => setSelectedCar(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal" onClick={(event) => event.stopPropagation()}>
             <img src={selectedCar.image_url} alt={selectedCar.model} width="500" />
             <h2>{selectedCar.model}</h2>
             <p>Hinta: {selectedCar.price}€</p>
@@ -53,7 +53,6 @@ function App() {
           </div>
         </div>
       )}
-
       <AddCar />
     </div>
   )
