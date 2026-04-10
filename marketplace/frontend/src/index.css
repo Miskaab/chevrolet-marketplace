@@ -21,4 +21,15 @@
 .car-card {
   cursor: pointer;
   margin-bottom: 20px;
+  max-width: 300px;
+}
+
+.details-container {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.details-section {
+  flex: 1;
 }

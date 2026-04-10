@@ -9,6 +9,17 @@ import './index.css'
 function App() {
   const [cars, setCars] = useState([])
   const [selectedCar, setSelectedCar] = useState(null)
+  const [cart, setCart] = useState([])
+
+  const addToCart = (car) => {
+    const found = cart.find(item => item.BasicID === car.BasicID)
+    if (found) return
+    setCart([...cart, car])
+  }
+
+  const removeFromCart = (id) => {
+    setCart(cart.filter(car => car.BasicID !== id))
+  }
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/basics')
@@ -31,7 +42,9 @@ function App() {
           >
             <img src={car.image_url} alt={car.model} width="400" />
             <h3>{car.model} - {car.price}€</h3>
-            <button>Lisää ostoskoriin</button>
+            <button onClick={() => addToCart(car)}>
+              Lisää ostoskoriin
+            </button>
           </div>
         ))}
       </div>
@@ -41,28 +54,37 @@ function App() {
           <div className="modal" onClick={(event) => event.stopPropagation()}>
             <img src={selectedCar.image_url} alt={selectedCar.model} width="500" />
             <h2>{selectedCar.model}</h2>
-            <h3>Perustiedot</h3>
-            <p>Hinta: {selectedCar.price}€</p>
-            <p>Vuosimalli: {selectedCar.year_model}</p>
-            <p>Mittarilukema: {selectedCar.mileage} km</p>
-            <p>Moottori: {selectedCar.engine}</p>
-            <p>Vaihteisto: {selectedCar.gearbox}</p>
-            <p>Väri: {selectedCar.color}</p>
-            <h3>Tekniset tiedot</h3>
-            <p>Vetotapa: {selectedCar.drive_type}</p>
-            <p>Teho: {selectedCar.Specifications.power}</p>
-            <p>Huippunopeus: {selectedCar.Specifications.top_speed }</p>
-            <p>Kulutus: {selectedCar.Specifications.fuel_consumption }</p>
-            <p>Kiihtyvyys: {selectedCar.Specifications.acceleration }</p>
-            <p>Paino: {selectedCar.Specifications.weight }</p>
-            <h3>Muuta</h3>
-            <p>Lisätiedot: {selectedCar.Features.notes }</p>
+            <div className='details-container'>
+              <div className='details-section'>
+                <h3>Perustiedot</h3>
+                <p>Hinta: {selectedCar.price}€</p>
+                <p>Vuosimalli: {selectedCar.year_model}</p>
+                <p>Mittarilukema: {selectedCar.mileage} km</p>
+                <p>Moottori: {selectedCar.engine}</p>
+                <p>Vaihteisto: {selectedCar.gearbox}</p>
+                <p>Väri: {selectedCar.color}</p>
+              </div>
+              <div className='details-section'>
+                <h3>Tekniset tiedot</h3>
+                <p>Vetotapa: {selectedCar.drive_type}</p>
+                <p>Teho: {selectedCar.Specifications.power}</p>
+                <p>Huippunopeus: {selectedCar.Specifications.top_speed}</p>
+                <p>Kulutus: {selectedCar.Specifications.fuel_consumption}</p>
+                <p>Kiihtyvyys: {selectedCar.Specifications.acceleration}</p>
+                <p>Paino: {selectedCar.Specifications.weight}</p>
+              </div>
+              <div className='details-section'>
+                <h3>Muuta</h3>
+                <p>Lisätiedot: {selectedCar.Features.notes}</p>
+              </div>
+            </div>
 
             <button onClick={() => setSelectedCar(null)}>Sulje</button>
           </div>
         </div>
       )}
       <AddCar />
+      <Cart cart={cart} removeFromCart={removeFromCart} />
     </div>
   )
 }
