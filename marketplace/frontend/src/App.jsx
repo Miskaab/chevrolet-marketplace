@@ -12,11 +12,8 @@ function App() {
   const [cart, setCart] = useState([])
 
   const addToCart = (car) => {
-    if (!car || !car.BasicID) return
-
     const found = cart.find(item => item.BasicID === car.BasicID)
     if (found) return
-
     setCart([...cart, car])
   }
 
@@ -31,6 +28,7 @@ function App() {
       })
   }, [])
 
+  //Morjesta anozio
 
   return (
     <div>
