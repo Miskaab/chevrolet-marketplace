@@ -20,24 +20,6 @@ body {
   align-items: center;
 }
 
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 700px;
-  width: 90%;
-}
-
-.details-container {
-  display: flex;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-
-.details-section {
-  flex: 1;
-}
-
 .car-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -68,4 +50,39 @@ body {
     align-items: center;
     text-align: center;
     font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.modal {
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  margin: auto;
+  margin-top: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.modal img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+
+.details-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.details-section {
+  flex: 1;
 }

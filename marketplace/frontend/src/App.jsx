@@ -49,10 +49,10 @@ function App() {
 
       {selectedCar && (
         <div className="overlay" onClick={() => setSelectedCar(null)}>
-          <div className="modal" onClick={(event) => event.stopPropagation()}>
-            <img src={selectedCar.image_url} alt={selectedCar.model} width="500" />
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <img src={selectedCar.image_url} alt={selectedCar.model} />
             <h2>{selectedCar.model}</h2>
-            <div className='details-container'>
+            <div className="details-container">
               <div className='details-section'>
                 <h3>Perustiedot</h3>
                 <p>Hinta: {selectedCar.price}€</p>
@@ -65,18 +65,17 @@ function App() {
               <div className='details-section'>
                 <h3>Tekniset tiedot</h3>
                 <p>Vetotapa: {selectedCar.drive_type}</p>
-                <p>Teho: {selectedCar.Specifications.power}</p>
-                <p>Huippunopeus: {selectedCar.Specifications.top_speed}</p>
-                <p>Kulutus: {selectedCar.Specifications.fuel_consumption}</p>
-                <p>Kiihtyvyys: {selectedCar.Specifications.acceleration}</p>
-                <p>Paino: {selectedCar.Specifications.weight}</p>
+                <p>Teho: {selectedCar.Specifications?.[0]?.power}</p>
+                <p>Huippunopeus: {selectedCar.Specifications?.[0]?.top_speed}</p>
+                <p>Kulutus: {selectedCar.Specifications?.[0]?.fuel_consumption}</p>
+                <p>Kiihtyvyys: {selectedCar.Specifications?.[0]?.acceleration}</p>
+                <p>Paino: {selectedCar.Specifications?.[0]?.weight}</p>
               </div>
               <div className='details-section'>
                 <h3>Muuta</h3>
-                <p>Lisätiedot: {selectedCar.Features.notes}</p>
+                <p>Lisätiedot: {selectedCar.Features?.[0]?.notes}</p>
               </div>
             </div>
-
             <button onClick={() => setSelectedCar(null)}>Sulje</button>
           </div>
         </div>
