@@ -12,8 +12,11 @@ function App() {
   const [cart, setCart] = useState([])
 
   const addToCart = (car) => {
+    if (!car || !car.BasicID) return
+
     const found = cart.find(item => item.BasicID === car.BasicID)
     if (found) return
+
     setCart([...cart, car])
   }
 
@@ -51,32 +54,41 @@ function App() {
         <div className="overlay" onClick={() => setSelectedCar(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <img src={selectedCar.image_url} alt={selectedCar.model} />
-            <h2>{selectedCar.model}</h2>
+
+            <h2 className="car-title">{selectedCar.model}</h2>
+
             <div className="details-container">
-              <div className='details-section'>
+
+              <div className="details-section">
                 <h3>Perustiedot</h3>
-                <p>Hinta: {selectedCar.price}€</p>
-                <p>Vuosimalli: {selectedCar.year_model}</p>
-                <p>Mittarilukema: {selectedCar.mileage} km</p>
-                <p>Moottori: {selectedCar.engine}</p>
-                <p>Vaihteisto: {selectedCar.gearbox}</p>
-                <p>Väri: {selectedCar.color}</p>
+                <p><b>Hinta:</b> {selectedCar.price}€</p>
+                <p><b>Vuosimalli:</b> {selectedCar.year_model}</p>
+                <p><b>Kilometrit:</b> {selectedCar.mileage} km</p>
+                <p><b>Moottori:</b> {selectedCar.engine}</p>
+                <p><b>Vaihteisto:</b> {selectedCar.gearbox}</p>
+                <p><b>Väri:</b> {selectedCar.color}</p>
               </div>
-              <div className='details-section'>
-                <h3>Tekniset tiedot</h3>
-                <p>Vetotapa: {selectedCar.drive_type}</p>
-                <p>Teho: {selectedCar.Specifications?.[0]?.power}</p>
-                <p>Huippunopeus: {selectedCar.Specifications?.[0]?.top_speed}</p>
-                <p>Kulutus: {selectedCar.Specifications?.[0]?.fuel_consumption}</p>
-                <p>Kiihtyvyys: {selectedCar.Specifications?.[0]?.acceleration}</p>
-                <p>Paino: {selectedCar.Specifications?.[0]?.weight}</p>
+
+              <div className="details-section">
+                <h3>Tekniset</h3>
+                <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
+                <p><b>Teho:</b> {selectedCar.Specifications?.[0]?.power}</p>
+                <p><b>Huippunopeus:</b> {selectedCar.Specifications?.[0]?.top_speed}</p>
+                <p><b>Kulutus:</b> {selectedCar.Specifications?.[0]?.fuel_consumption}</p>
+                <p><b>Kiihtyvyys:</b> {selectedCar.Specifications?.[0]?.acceleration}</p>
+                <p><b>Paino:</b> {selectedCar.Specifications?.[0]?.weight}</p>
               </div>
-              <div className='details-section'>
+
+              <div className="details-section">
                 <h3>Muuta</h3>
-                <p>Lisätiedot: {selectedCar.Features?.[0]?.notes}</p>
+                <p>{selectedCar.Features?.[0]?.notes || "Ei lisätietoja"}</p>
               </div>
+
             </div>
-            <button onClick={() => setSelectedCar(null)}>Sulje</button>
+
+            <button className="close-btn" onClick={() => setSelectedCar(null)}>
+              Sulje
+            </button>
           </div>
         </div>
       )}
