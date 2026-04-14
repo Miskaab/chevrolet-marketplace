@@ -3,7 +3,7 @@ const cors = require('cors')
 const app = express()
 const { supabase } = require('./database.js');
 require('dotenv').config();
-
+const bcrypt = require('bcrypt')
 
 app.use(express.json())
 app.use(cors())
@@ -77,6 +77,44 @@ app.post('/api/features/', async (request, response) => {
 
   response.status(201).json(data);
 });
+
+app.post('/api/register', async (req, res) => {
+  const { username, password } = req.body
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const { data, error } = await supabase
+    .from('Users')
+    .insert([{ username: username, password: hashedPassword }])
+    .select()
+    .single()
+
+  if (error) return res.status(500).json({ error })
+
+  res.json(data)
+})
+
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body
+
+  const { data: user, error } = await supabase
+    .from('Users')
+    .select('*')
+    .eq('username', username)
+    .single()
+
+  if (error || !user) {
+    return res.status(401).json({ error: 'Väärä käyttäjänimi' })
+  }
+
+  const valid = await bcrypt.compare(password, user.password)
+
+  if (!valid) {
+    return res.status(401).json({ error: 'Väärä salasana' })
+  }
+
+  res.json({ message: 'Kirjautuminen onnistui', user })
+})
 
 
 const PORT = 3001
