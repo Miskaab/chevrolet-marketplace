@@ -41,6 +41,7 @@ function App() {
             <Link to="/">Etusivu</Link>
             <Link to="/add-car">Lisää auto</Link>
             <Link to="/cart">Ostoskori</Link>
+            <Link to="/login">Kirjaudu</Link>
           </div>
         </div>
       </nav>
@@ -117,6 +118,7 @@ function App() {
         />
 
         <Route path="/add-car" element={<AddCar />} />
+        <Route path="/login" element={<Login />} />
 
         <Route
           path="/cart"
