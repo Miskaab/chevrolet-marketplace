@@ -81,17 +81,28 @@ app.post('/api/features/', async (request, response) => {
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body
 
+  // tarkista onko username jo olemassa
+  const { data: existing } = await supabase
+    .from('Users')
+    .select('*')
+    .eq('username', username)
+    .single()
+
+  if (existing) {
+    return res.status(400).json({ error: 'Käyttäjänimi on jo käytössä' })
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10)
 
   const { data, error } = await supabase
     .from('Users')
-    .insert([{ username: username, password: hashedPassword }])
+    .insert([{ username, password: hashedPassword }])
     .select()
     .single()
 
   if (error) return res.status(500).json({ error })
 
-  res.json(data)
+  res.json({ message: 'Käyttäjä luotu', user: data })
 })
 
 app.post('/api/login', async (req, res) => {
@@ -113,9 +124,14 @@ app.post('/api/login', async (req, res) => {
     return res.status(401).json({ error: 'Väärä salasana' })
   }
 
-  res.json({ message: 'Kirjautuminen onnistui', user })
+  res.json({
+    message: 'OK',
+    user: {
+      id: user.UserID,
+      username: user.username
+    }
+  })
 })
-
 
 const PORT = 3001
 app.listen(PORT, () => {
