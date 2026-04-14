@@ -3,6 +3,7 @@ import axios from 'axios'
 import AddCar from '/components/AddCar.jsx'
 import Cart from '/components/Cart.jsx'
 import Login from '/components/Login.jsx'
+import Register from '/components/Register.jsx'
 import { Routes, Route, Link } from 'react-router-dom'
 import './index.css'
 
@@ -29,6 +30,8 @@ function App() {
       })
   }, [])
 
+  const user = JSON.parse(localStorage.getItem('user'))
+
 
 
   return (
@@ -41,7 +44,18 @@ function App() {
             <Link to="/">Etusivu</Link>
             <Link to="/add-car">Lisää auto</Link>
             <Link to="/cart">Ostoskori</Link>
-            <Link to="/login">Kirjaudu</Link>
+
+            {!user && <Link to="/login">Kirjaudu</Link>}
+            {!user && <Link to="/register">Rekisteröidy</Link>}
+
+            {user && (
+              <button onClick={() => {
+                localStorage.removeItem('user')
+                window.location.reload()
+              }}>
+                Kirjaudu ulos ({user.username})
+              </button>
+            )}
           </div>
         </div>
       </nav>
@@ -119,6 +133,7 @@ function App() {
 
         <Route path="/add-car" element={<AddCar />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         <Route
           path="/cart"

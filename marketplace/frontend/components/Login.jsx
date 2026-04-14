@@ -9,16 +9,18 @@ function Login() {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:3001/api/login', {
+      const res = await axios.post('http://localhost:3001/api/login', {
         username,
         password
       })
 
-      alert('Kirjautuminen onnistui!')
-      console.log(response.data)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
 
-    } catch (error) {
-      alert('Virhe kirjautumisessa')
+      alert('Kirjautuminen onnistui!')
+      window.location.href = '/'
+
+    } catch {
+      alert('Väärät tiedot')
     }
   }
 
@@ -30,14 +32,14 @@ function Login() {
         type="text"
         placeholder="Käyttäjänimi"
         value={username}
-        onChange={(event) => setUsername(event.target.value)}
+        onChange={(e) => setUsername(e.target.value)}
       />
 
       <input
         type="password"
         placeholder="Salasana"
         value={password}
-        onChange={(event) => setPassword(event.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <button type="submit">Kirjaudu</button>
