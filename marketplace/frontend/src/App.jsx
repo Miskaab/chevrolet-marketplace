@@ -56,131 +56,138 @@ function App() {
       {user && (
         <nav className="navbar">
           <div className="navbar-content">
+
+            <div className="nav-left">
+              <Link to="/">Etusivu</Link>
+              <Link to="/add-car">Lisää auto</Link>
+            </div>
+
             <div className="logo">
               <img src={logo} alt="logo" />
             </div>
-            <div className="nav-links">
-              <Link to="/">Etusivu</Link>
-              <Link to="/add-car">Lisää auto</Link>
+
+            <div className="nav-right">
               <Link to="/cart">Ostoskori</Link>
-              <button className="logout-btn" onClick={logout}>
+              <button onClick={logout}>
                 Kirjaudu ulos ({user.username})
               </button>
             </div>
+
           </div>
         </nav>
-      )}
+  )
+}
 
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            user ? <Navigate to="/" replace /> : <Login setUser={setUser} />
-          }
-        />
+<Routes>
+  <Route
+    path="/login"
+    element={
+      user ? <Navigate to="/" replace /> : <Login setUser={setUser} />
+    }
+  />
 
-        <Route
-          path="/register"
-          element={
-            user ? <Navigate to="/" replace /> : <Register />
-          }
-        />
+  <Route
+    path="/register"
+    element={
+      user ? <Navigate to="/" replace /> : <Register />
+    }
+  />
 
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <div className="container">
-                <div className="car-list">
-                  {cars.map(car => (
-                    <div
-                      key={car.BasicID}
-                      onClick={() => setSelectedCar(car)}
-                      className="car-card"
-                    >
-                      <img src={car.image_url} alt={car.model} />
-                      <h3>{car.model} - {car.price}€</h3>
+  <Route
+    path="/"
+    element={
+      <ProtectedRoute>
+        <div className="container">
+          <div className="car-list">
+            {cars.map(car => (
+              <div
+                key={car.BasicID}
+                onClick={() => setSelectedCar(car)}
+                className="car-card"
+              >
+                <img src={car.image_url} alt={car.model} />
+                <h3>{car.model} - {car.price}€</h3>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          addToCart(car)
-                        }}
-                      >
-                        Lisää ostoskoriin
-                      </button>
-                    </div>
-                  ))}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    addToCart(car)
+                  }}
+                >
+                  Lisää ostoskoriin
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {selectedCar && (
+            <div className="overlay" onClick={() => setSelectedCar(null)}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <img src={selectedCar.image_url} alt={selectedCar.model} />
+                <h2 className="car-title">{selectedCar.model}</h2>
+
+                <div className="details-container">
+                  <div className="details-section">
+                    <h3>Perustiedot</h3>
+                    <p><b>Hinta:</b> {selectedCar.price}€</p>
+                    <p><b>Vuosimalli:</b> {selectedCar.year_model}</p>
+                    <p><b>Kilometrit:</b> {selectedCar.mileage} km</p>
+                    <p><b>Moottori:</b> {selectedCar.engine}</p>
+                    <p><b>Vaihteisto:</b> {selectedCar.gearbox}</p>
+                    <p><b>Väri:</b> {selectedCar.color}</p>
+                  </div>
+
+                  <div className="details-section">
+                    <h3>Tekniset</h3>
+                    <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
+                    <p><b>Teho:</b> {selectedCar.Specifications.power}</p>
+                    <p><b>Huippunopeus:</b> {selectedCar.Specifications.top_speed}</p>
+                    <p><b>Kulutus:</b> {selectedCar.Specifications.fuel_consumption}</p>
+                    <p><b>Kiihtyvyys:</b> {selectedCar.Specifications.acceleration}</p>
+                    <p><b>Paino:</b> {selectedCar.Specifications.weight}</p>
+                  </div>
+
+                  <div className="details-section">
+                    <h3>Muuta</h3>
+                    <p>{selectedCar.Features?.[0]?.notes || 'Ei lisätietoja'}</p>
+                  </div>
                 </div>
 
-                {selectedCar && (
-                  <div className="overlay" onClick={() => setSelectedCar(null)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                      <img src={selectedCar.image_url} alt={selectedCar.model} />
-                      <h2 className="car-title">{selectedCar.model}</h2>
-
-                      <div className="details-container">
-                        <div className="details-section">
-                          <h3>Perustiedot</h3>
-                          <p><b>Hinta:</b> {selectedCar.price}€</p>
-                          <p><b>Vuosimalli:</b> {selectedCar.year_model}</p>
-                          <p><b>Kilometrit:</b> {selectedCar.mileage} km</p>
-                          <p><b>Moottori:</b> {selectedCar.engine}</p>
-                          <p><b>Vaihteisto:</b> {selectedCar.gearbox}</p>
-                          <p><b>Väri:</b> {selectedCar.color}</p>
-                        </div>
-
-                        <div className="details-section">
-                          <h3>Tekniset</h3>
-                          <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
-                          <p><b>Teho:</b> {selectedCar.Specifications.power}</p>
-                          <p><b>Huippunopeus:</b> {selectedCar.Specifications.top_speed}</p>
-                          <p><b>Kulutus:</b> {selectedCar.Specifications.fuel_consumption}</p>
-                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications.acceleration}</p>
-                          <p><b>Paino:</b> {selectedCar.Specifications.weight}</p>
-                        </div>
-
-                        <div className="details-section">
-                          <h3>Muuta</h3>
-                          <p>{selectedCar.Features?.[0]?.notes || 'Ei lisätietoja'}</p>
-                        </div>
-                      </div>
-
-                      <button className="close-btn" onClick={() => setSelectedCar(null)}>
-                        Sulje
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <button className="close-btn" onClick={() => setSelectedCar(null)}>
+                  Sulje
+                </button>
               </div>
-            </ProtectedRoute>
-          }
-        />
+            </div>
+          )}
+        </div>
+      </ProtectedRoute>
+    }
+  />
 
-        <Route
-          path="/add-car"
-          element={
-            <ProtectedRoute>
-              <AddCar />
-            </ProtectedRoute>
-          }
-        />
+  <Route
+    path="/add-car"
+    element={
+      <ProtectedRoute>
+        <AddCar />
+      </ProtectedRoute>
+    }
+  />
 
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
-              <Cart cart={cart} removeFromCart={removeFromCart} />
-            </ProtectedRoute>
-          }
-        />
+  <Route
+    path="/cart"
+    element={
+      <ProtectedRoute>
+        <Cart cart={cart} removeFromCart={removeFromCart} />
+      </ProtectedRoute>
+    }
+  />
 
-        <Route
-          path="*"
-          element={<Navigate to={user ? "/" : "/login"} replace />}
-        />
-      </Routes>
-    </div>
+  <Route
+    path="*"
+    element={<Navigate to={user ? "/" : "/login"} replace />}
+  />
+</Routes>
+    </div >
   )
 }
 

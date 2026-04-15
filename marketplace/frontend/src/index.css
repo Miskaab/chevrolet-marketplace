@@ -10,21 +10,21 @@ body {
   overflow-x: hidden;
 }
 
-/* NAVBAR */
 .navbar {
-  width: 100%;
+  height: 80px;
   background: #111;
   border-bottom: 2px solid #ff6a00;
-  padding: 18px 0;
+  position: relative;
 }
 
 .navbar-content {
   max-width: 1400px;
   margin: 0 auto;
+  height: 100%;
   padding: 0 30px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .navbar-content h1 {
@@ -361,8 +361,79 @@ textarea {
   color: #ff6a00;
   text-decoration: none;
 }
+/* LINKIT */
+.nav-left a,
+.nav-right a {
+  position: relative;
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 6px 4px;
+  transition: 0.3s;
+}
+
+/* ALLEVIIVA ANIMAATIO */
+.nav-left a::after,
+.nav-right a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: #ff6a00;
+  transition: 0.3s;
+}
+
+.nav-left a:hover::after,
+.nav-right a:hover::after {
+  width: 100%;
+}
+
+.nav-left a:hover,
+.nav-right a:hover {
+  color: #ff6a00;
+}
+
+.nav-right button {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #ff6a00;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* HOVER */
+.nav-right button:hover {
+  background: #ff6a00;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255,106,0,0.6);
+}
+
+/* CLICK */
+.nav-right button:active {
+  transform: scale(0.95);
+}
+
+/* LOGO KESKELLE */
+.logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -15px; /* 🔥 nostaa vähän */
+}
 
 .logo img {
-  height: 50px;
+  height: 110px; /* 🔥 tee tästä isompi */
   object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(255,106,0,0.7));
+  transition: 0.3s;
+}
+
+/* HOVER */
+.logo img:hover {
+  transform: scale(1.05);
 }
