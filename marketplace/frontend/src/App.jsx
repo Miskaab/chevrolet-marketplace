@@ -61,30 +61,45 @@ function App() {
 
   let timeout
 
+  const logoutUser = () => {
+    alert('Sinut kirjattiin ulos')
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+    setUser(null)
+  }
+
   const resetTimer = () => {
     clearTimeout(timeout)
 
     timeout = setTimeout(() => {
-      alert('Sinut kirjattiin ulos käyttämättömyyden vuoksi')
-      logout()
+      logoutUser()
     }, 10 * 60 * 1000)
   }
 
   const events = ['mousemove', 'keydown', 'click', 'scroll']
 
-  events.forEach((event) => {
-    window.addEventListener(event, resetTimer)
-  })
+  events.forEach(e => window.addEventListener(e, resetTimer))
 
   resetTimer()
 
   return () => {
     clearTimeout(timeout)
-    events.forEach((event) => {
-      window.removeEventListener(event, resetTimer)
-    })
+    events.forEach(e => window.removeEventListener(e, resetTimer))
   }
 }, [user])
+
+
+useEffect(() => {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  const payload = JSON.parse(atob(token.split('.')[1]))
+  const expiry = payload.exp * 1000
+
+  if (Date.now() > expiry) {
+    logout()
+  }
+}, [])
 
   return (
     <div>
