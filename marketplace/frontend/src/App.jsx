@@ -56,6 +56,36 @@ function App() {
     setCart([])
   }
 
+  useEffect(() => {
+  if (!user) return
+
+  let timeout
+
+  const resetTimer = () => {
+    clearTimeout(timeout)
+
+    timeout = setTimeout(() => {
+      alert('Sinut kirjattiin ulos käyttämättömyyden vuoksi')
+      logout()
+    }, 10 * 60 * 1000)
+  }
+
+  const events = ['mousemove', 'keydown', 'click', 'scroll']
+
+  events.forEach((event) => {
+    window.addEventListener(event, resetTimer)
+  })
+
+  resetTimer()
+
+  return () => {
+    clearTimeout(timeout)
+    events.forEach((event) => {
+      window.removeEventListener(event, resetTimer)
+    })
+  }
+}, [user])
+
   return (
     <div>
       <Background />
