@@ -2,9 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
-localStorage.setItem('token', res.data.token)
-localStorage.setItem('user', JSON.stringify(res.data.user))
-setUser(res.data.user)
+
 
 function Login({ setUser }) {
   const [username, setUsername] = useState('')
@@ -25,6 +23,7 @@ function Login({ setUser }) {
       alert(err.response?.data?.error || 'Virhe kirjautumisessa')
     }
   }
+
 
   return (
     <div className="auth-page">
