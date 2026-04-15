@@ -67,7 +67,6 @@ function AddCar() {
 
   return (
     <div>
-      <h2>Lisää uusi Chevrolet ilmoitus</h2>
       <form onSubmit={handleSubmit}>
         <h3>Perustiedot</h3>
         <input type="text" placeholder="Malli" value={model} onChange={(event) => setModel(event.target.value)} />
