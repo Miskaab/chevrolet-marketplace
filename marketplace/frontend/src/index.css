@@ -516,3 +516,63 @@ textarea {
     opacity: 0;
   }
 }
+
+.cart-link {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -14px;
+  background: #ff6a00;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 7px;
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(255, 106, 0, 0.8);
+  line-height: 1;
+}
+
+.cart-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.remove-btn {
+  background: transparent;
+  border: 2px solid #ff6a00;
+  color: #ff6a00;
+  font-size: 16px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.remove-btn:hover {
+  background: #ff6a00;
+  color: #fff;
+}
+
+.clear-cart-btn {
+  margin-top: 20px;
+  background: transparent;
+  border: 2px solid #ff6a00;
+  color: #ff6a00;
+  padding: 10px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.clear-cart-btn:hover {
+  background: #ff6a00;
+  color: #fff;
+}

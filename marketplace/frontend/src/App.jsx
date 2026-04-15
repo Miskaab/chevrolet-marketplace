@@ -6,8 +6,7 @@ import Login from '/components/Login.jsx'
 import Register from '/components/Register.jsx'
 import logo from './logos/Kauppa.png'
 import Background from '/components/Background.jsx'
-import { NavLink } from 'react-router-dom'
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
+import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 
 function App() {
@@ -53,18 +52,23 @@ function App() {
     return children
   }
 
+  const clearCart = () => {
+    setCart([])
+  }
+
   return (
     <div>
       <Background />
+
       {user && (
         <nav className="navbar">
           <div className="navbar-content">
-
             <div className="nav-left">
-              <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>
+              <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>
                 Etusivu
               </NavLink>
-              <NavLink to="/add-car" className={({ isActive }) => isActive ? "active" : ""}>
+
+              <NavLink to="/add-car" className={({ isActive }) => isActive ? 'active' : ''}>
                 Lisää auto
               </NavLink>
             </div>
@@ -74,18 +78,20 @@ function App() {
             </div>
 
             <div className="nav-right">
-              <NavLink to="/cart" className={({ isActive }) => isActive ? "active" : ""}>
+              <NavLink to="/cart" className={({ isActive }) => isActive ? 'active cart-link' : 'cart-link'}>
                 Ostoskori
+                {cart.length > 0 && (
+                  <span className="cart-badge">{cart.length}</span>
+                )}
               </NavLink>
+
               <button onClick={logout}>
                 Kirjaudu ulos ({user.username})
               </button>
             </div>
-
           </div>
         </nav>
-      )
-      }
+      )}
 
       <Routes>
         <Route
@@ -149,11 +155,11 @@ function App() {
                         <div className="details-section">
                           <h3>Tekniset</h3>
                           <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
-                          <p><b>Teho:</b> {selectedCar.Specifications.power}</p>
-                          <p><b>Huippunopeus:</b> {selectedCar.Specifications.top_speed}</p>
-                          <p><b>Kulutus:</b> {selectedCar.Specifications.fuel_consumption}</p>
-                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications.acceleration}</p>
-                          <p><b>Paino:</b> {selectedCar.Specifications.weight}</p>
+                          <p><b>Teho:</b> {selectedCar.Specifications?.power}</p>
+                          <p><b>Huippunopeus:</b> {selectedCar.Specifications?.top_speed}</p>
+                          <p><b>Kulutus:</b> {selectedCar.Specifications?.fuel_consumption}</p>
+                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications?.acceleration}</p>
+                          <p><b>Paino:</b> {selectedCar.Specifications?.weight}</p>
                         </div>
 
                         <div className="details-section">
@@ -186,17 +192,14 @@ function App() {
           path="/cart"
           element={
             <ProtectedRoute>
-              <Cart cart={cart} removeFromCart={removeFromCart} />
+              <Cart cart={cart} removeFromCart={removeFromCart} clearCart={clearCart}/>
             </ProtectedRoute>
           }
         />
 
-        <Route
-          path="*"
-          element={<Navigate to={user ? "/" : "/login"} replace />}
-        />
+        <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
       </Routes>
-    </div >
+    </div>
   )
 }
 
