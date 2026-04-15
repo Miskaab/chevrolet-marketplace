@@ -4,9 +4,11 @@ const app = express()
 const { supabase } = require('./database.js');
 require('dotenv').config();
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 app.use(express.json())
 app.use(cors())
+
 
 app.get('/api/basics', async (request, response) => {
   const { data, error } = await supabase
@@ -32,7 +34,7 @@ app.post('/api/basics/', async (request, response) => {
 
   const { data, error } = await supabase
     .from('Basics')
-    .insert([{ registration_number: registration_number, engine: engine, gearbox: gearbox, mileage: mileage, year_model: year_model, drive_type: drive_type, color:color, model: model, price: price, image_url: image_url }])
+    .insert([{ registration_number: registration_number, engine: engine, gearbox: gearbox, mileage: mileage, year_model: year_model, drive_type: drive_type, color: color, model: model, price: price, image_url: image_url }])
     .select()
     .single();
 
@@ -81,14 +83,17 @@ app.post('/api/features/', async (request, response) => {
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body
 
-  // tarkista onko username jo olemassa
-  const { data: existing } = await supabase
+  const { data: existingUser, error: existingError } = await supabase
     .from('Users')
     .select('*')
     .eq('username', username)
-    .single()
+    .maybeSingle()
 
-  if (existing) {
+  if (existingError) {
+    return res.status(500).json({ error: existingError.message })
+  }
+
+  if (existingUser) {
     return res.status(400).json({ error: 'Käyttäjänimi on jo käytössä' })
   }
 
@@ -96,11 +101,13 @@ app.post('/api/register', async (req, res) => {
 
   const { data, error } = await supabase
     .from('Users')
-    .insert([{ username, password: hashedPassword }])
+    .insert([{ username: username, password: hashedPassword }])
     .select()
     .single()
 
-  if (error) return res.status(500).json({ error })
+  if (error) {
+    return res.status(500).json({ error: error.message })
+  }
 
   res.json({ message: 'Käyttäjä luotu', user: data })
 })
@@ -124,8 +131,15 @@ app.post('/api/login', async (req, res) => {
     return res.status(401).json({ error: 'Väärä salasana' })
   }
 
+  const token = jwt.sign(
+    { userId: user.UserID, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: '10m' }
+  )
+
   res.json({
     message: 'OK',
+    token,
     user: {
       id: user.UserID,
       username: user.username
@@ -135,5 +149,5 @@ app.post('/api/login', async (req, res) => {
 
 const PORT = 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
