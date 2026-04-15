@@ -4,6 +4,7 @@ import AddCar from '/components/AddCar.jsx'
 import Cart from '/components/Cart.jsx'
 import Login from '/components/Login.jsx'
 import Register from '/components/Register.jsx'
+import logo from './logos/Kauppa.png'
 import { Routes, Route, Link, Navigate } from 'react-router-dom'
 import './index.css'
 
@@ -55,8 +56,9 @@ function App() {
       {user && (
         <nav className="navbar">
           <div className="navbar-content">
-            <h1>Chevrolet Marketplace</h1>
-
+            <div className="logo">
+              <img src={logo} alt="logo" />
+            </div>
             <div className="nav-links">
               <Link to="/">Etusivu</Link>
               <Link to="/add-car">Lisää auto</Link>

@@ -361,3 +361,8 @@ textarea {
   color: #ff6a00;
   text-decoration: none;
 }
+
+.logo img {
+  height: 50px;
+  object-fit: contain;
+}
