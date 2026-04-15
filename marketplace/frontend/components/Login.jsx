@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
-function Login() {
+function Login({ setUser }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -15,35 +16,40 @@ function Login() {
       })
 
       localStorage.setItem('user', JSON.stringify(res.data.user))
-
-      alert('Kirjautuminen onnistui!')
-      window.location.href = '/'
-
-    } catch {
-      alert('Väärät tiedot')
+      setUser(res.data.user)
+    } catch (err) {
+      alert(err.response?.data?.error || 'Virhe kirjautumisessa')
     }
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <h2>Kirjaudu</h2>
+    <div className="auth-page">
+      <form className="auth-form" onSubmit={handleLogin}>
+        <h2>Kirjaudu</h2>
 
-      <input
-        type="text"
-        placeholder="Käyttäjänimi"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Käyttäjänimi"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
 
-      <input
-        type="password"
-        placeholder="Salasana"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          type="password"
+          placeholder="Salasana"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-      <button type="submit">Kirjaudu</button>
-    </form>
+        <button type="submit">Kirjaudu</button>
+
+        <p>
+          Ei vielä käyttäjää? <Link to="/register">Rekisteröidy</Link>
+        </p>
+      </form>
+    </div>
   )
 }
 

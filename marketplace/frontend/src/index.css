@@ -307,3 +307,57 @@ textarea {
     font-size: 15px;
   }
 }
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 420px;
+  background: #111;
+  border: 2px solid #ff6a00;
+  border-radius: 18px;
+  padding: 30px;
+  color: white;
+}
+
+.auth-form h2 {
+  margin-top: 0;
+  color: #ff6a00;
+  text-align: center;
+}
+
+.auth-form input {
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  font-size: 16px;
+}
+
+.auth-form button {
+  width: 100%;
+  background: #ff6a00;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.auth-form p {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.auth-form a {
+  color: #ff6a00;
+  text-decoration: none;
+}
