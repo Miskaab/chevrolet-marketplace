@@ -8,6 +8,8 @@ import logo from './logos/Kauppa.png'
 import Background from '/components/Background.jsx'
 import AdminDashboard from '/components/AdminDashboard.jsx'
 import EditCar from '/components/EditCar.jsx'
+import Checkout from '/components/CheckOut'
+import Success from '/components/Succes'
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 
@@ -342,15 +344,21 @@ function App() {
             </ProtectedRoute>
           }
         />
+  
         <Route
           path="/checkout"
           element={
             <ProtectedRoute user={user}>
-              <div className="cart-container">
-                <h1>Kassa</h1>
-                <p>Tämä ei ole oikea sivu.</p>
-                <button className="checkout-btn">Maksa</button>
-              </div>
+              <Checkout cart={cart} clearCart={clearCart} />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/success"
+          element={
+            <ProtectedRoute user={user}>
+              <Success />
             </ProtectedRoute>
           }
         />
