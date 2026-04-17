@@ -240,6 +240,32 @@ app.delete('/api/basics/:id', async (req, res) => {
   res.json({ message: 'Auto poistettu' })
 })
 
+app.put('/api/specifications/:id', async (req, res) => {
+  const { id } = req.params
+
+  const { data, error } = await supabase
+    .from('Specifications')
+    .update(req.body)
+    .eq('BasicID', id)
+
+  if (error) return res.status(500).json(error)
+
+  res.json(data)
+})
+
+app.put('/api/features/:id', async (req, res) => {
+  const { id } = req.params
+
+  const { data, error } = await supabase
+    .from('Features')
+    .update({ notes: req.body.notes })
+    .eq('BasicID', id)
+
+  if (error) return res.status(500).json(error)
+
+  res.json(data)
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
