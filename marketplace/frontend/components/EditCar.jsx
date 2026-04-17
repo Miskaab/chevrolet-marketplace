@@ -50,11 +50,11 @@ function EditCar() {
         })
 
         setSpecs({
-          power: car.Specifications?.[0]?.power || '',
-          top_speed: car.Specifications?.[0]?.top_speed || '',
-          acceleration: car.Specifications?.[0]?.acceleration || '',
-          fuel_consumption: car.Specifications?.[0]?.fuel_consumption || '',
-          weight: car.Specifications?.[0]?.weight || ''
+          power: car.Specifications.power || '',
+          top_speed: car.Specifications.top_speed || '',
+          acceleration: car.Specifications.acceleration || '',
+          fuel_consumption: car.Specifications.fuel_consumption || '',
+          weight: car.Specifications.weight || ''
         })
 
         setFeatures(car.Features?.[0]?.notes || '')
