@@ -11,24 +11,34 @@ function Cart({ cart, removeFromCart, clearCart }) {
         <>
           {cart.map((car) => (
             <div key={car.BasicID} className="cart-item">
-              <div className="cart-item-top">
-                <h3>{car.model} - {car.price}€</h3>
+              <div className="cart-item-left">
+                <div className="cart-item-image">
+                  <img src={car.image_url} alt={car.model} />
+                </div>
 
-                <button
-                  className="remove-btn"
-                  onClick={() => removeFromCart(car.BasicID)}
-                >
-                  ✕
-                </button>
+                <div className="cart-item-info">
+                  <h3>{car.model}</h3>
+                  <p>Vuosimalli: {car.year_model}</p>
+                  <p>Kilometrit: {car.mileage} km</p>
+                  <p className="cart-price">{car.price}€</p>
+                </div>
               </div>
+
+              <button
+                className="remove-btn"
+                onClick={() => removeFromCart(car.BasicID)}
+              >
+                ✕
+              </button>
             </div>
           ))}
 
-          <h2>Yhteensä: {total}€</h2>
-
-          <button className="clear-cart-btn" onClick={clearCart}>
-            Tyhjennä ostoskori
-          </button>
+          <div className="cart-summary">
+            <h2>Yhteensä: {total}€</h2>
+            <button className="clear-cart-btn" onClick={clearCart}>
+              Tyhjennä ostoskori
+            </button>
+          </div>
         </>
       )}
     </div>

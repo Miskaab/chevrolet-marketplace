@@ -242,7 +242,9 @@ function App() {
                       onClick={() => setSelectedCar(car)}
                       className="car-card"
                     >
-                      <img src={car.image_url} alt={car.model} />
+                      <div className="car-image">
+                        <img src={car.image_url} alt={car.model} />
+                      </div>
                       <h3>{car.model} - {car.price}€</h3>
 
                       <button
