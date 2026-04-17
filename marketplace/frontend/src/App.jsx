@@ -277,11 +277,11 @@ function App() {
                         <div className="details-section">
                           <h3>Tekniset</h3>
                           <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
-                          <p><b>Teho:</b> {selectedCar.Specifications?.[0]?.power || 'Ei tietoa'}</p>
-                          <p><b>Huippunopeus:</b> {selectedCar.Specifications?.[0]?.top_speed || 'Ei tietoa'}</p>
-                          <p><b>Kulutus:</b> {selectedCar.Specifications?.[0]?.fuel_consumption || 'Ei tietoa'}</p>
-                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications?.[0]?.acceleration || 'Ei tietoa'}</p>
-                          <p><b>Paino:</b> {selectedCar.Specifications?.[0]?.weight || 'Ei tietoa'}</p>
+                          <p><b>Teho:</b> {selectedCar.Specifications.power}</p>
+                          <p><b>Huippunopeus:</b> {selectedCar.Specifications.top_speed}</p>
+                          <p><b>Kulutus:</b> {selectedCar.Specifications.fuel_consumption}</p>
+                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications.acceleration}</p>
+                          <p><b>Paino:</b> {selectedCar.Specifications.weight}</p>
                         </div>
 
                         <div className="details-section">
