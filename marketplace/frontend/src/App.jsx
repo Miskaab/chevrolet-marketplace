@@ -57,49 +57,56 @@ function App() {
   }
 
   useEffect(() => {
-  if (!user) return
+    if (!user) return
 
-  let timeout
+    let timeout
 
-  const logoutUser = () => {
-    alert('Sinut kirjattiin ulos')
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    setUser(null)
+    const logoutUser = () => {
+      alert('Sinut kirjattiin ulos')
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      setUser(null)
+    }
+
+    const resetTimer = () => {
+      clearTimeout(timeout)
+
+      timeout = setTimeout(() => {
+        logoutUser()
+      }, 10 * 60 * 1000)
+    }
+
+    const events = ['mousemove', 'keydown', 'click', 'scroll']
+
+    events.forEach(e => window.addEventListener(e, resetTimer))
+
+    resetTimer()
+
+    return () => {
+      clearTimeout(timeout)
+      events.forEach(e => window.removeEventListener(e, resetTimer))
+    }
+  }, [user])
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    const expiry = payload.exp * 1000
+
+    if (Date.now() > expiry) {
+      logout()
+    }
+  }, [])
+
+  const AdminRoute = ({ children }) => {
+    if (!user || !user.isAdmin) {
+      return <Navigate to="/" />
+    }
+    return children
   }
-
-  const resetTimer = () => {
-    clearTimeout(timeout)
-
-    timeout = setTimeout(() => {
-      logoutUser()
-    }, 10 * 60 * 1000)
-  }
-
-  const events = ['mousemove', 'keydown', 'click', 'scroll']
-
-  events.forEach(e => window.addEventListener(e, resetTimer))
-
-  resetTimer()
-
-  return () => {
-    clearTimeout(timeout)
-    events.forEach(e => window.removeEventListener(e, resetTimer))
-  }
-}, [user])
-
-
-useEffect(() => {
-  const token = localStorage.getItem('token')
-  if (!token) return
-
-  const payload = JSON.parse(atob(token.split('.')[1]))
-  const expiry = payload.exp * 1000
-
-  if (Date.now() > expiry) {
-    logout()
-  }
-}, [])
 
   return (
     <div>
@@ -113,9 +120,9 @@ useEffect(() => {
                 Etusivu
               </NavLink>
 
-              <NavLink to="/add-car" className={({ isActive }) => isActive ? 'active' : ''}>
-                Lisää auto
-              </NavLink>
+              {user?.isAdmin && (
+                <NavLink to="/add-car">Lisää auto</NavLink>
+              )}
             </div>
 
             <div className="logo">
@@ -152,6 +159,7 @@ useEffect(() => {
             user ? <Navigate to="/" replace /> : <Register />
           }
         />
+
 
         <Route
           path="/"
@@ -224,20 +232,17 @@ useEffect(() => {
           }
         />
 
-        <Route
-          path="/add-car"
-          element={
-            <ProtectedRoute>
-              <AddCar />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/add-car" element={
+          <AdminRoute>
+            <AddCar />
+          </AdminRoute>
+        } />
 
         <Route
           path="/cart"
           element={
             <ProtectedRoute>
-              <Cart cart={cart} removeFromCart={removeFromCart} clearCart={clearCart}/>
+              <Cart cart={cart} removeFromCart={removeFromCart} clearCart={clearCart} />
             </ProtectedRoute>
           }
         />
