@@ -17,7 +17,10 @@ function AdminDashboard({ cars, onDelete }) {
                 Muokkaa
               </NavLink>
 
-              <button className="delete-btn" onClick={() => onDelete(car.BasicID)}>
+              <button
+                className="delete-btn"
+                onClick={() => onDelete(car.BasicID)}
+              >
                 Poista
               </button>
             </div>

@@ -7,6 +7,7 @@ import Register from '/components/Register.jsx'
 import logo from './logos/Kauppa.png'
 import Background from '/components/Background.jsx'
 import AdminDashboard from '/components/AdminDashboard.jsx'
+import EditCar from '/components/EditCar.jsx'
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 
@@ -207,12 +208,21 @@ function App() {
             user ? <Navigate to="/" replace /> : <Register />
           }
         />
-        
+
         <Route
           path="/admin"
           element={
             <AdminRoute>
               <AdminDashboard cars={cars} onDelete={deleteCar} />
+            </AdminRoute>
+          }
+        />
+        
+        <Route
+          path="/edit-car/:id"
+          element={
+            <AdminRoute>
+              <EditCar />
             </AdminRoute>
           }
         />
