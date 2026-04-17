@@ -148,6 +148,39 @@ app.post('/api/login', async (req, res) => {
   })
 })
 
+app.put('/api/basics/:id', async (req, res) => {
+  const { id } = req.params
+  const { model, price, mileage, year_model, color, engine, gearbox, drive_type, image_url } = req.body
+
+  const { data, error } = await supabase
+    .from('Basics')
+    .update({ model, price, mileage, year_model, color, engine, gearbox, drive_type, image_url })
+    .eq('BasicID', id)
+    .select()
+    .single()
+
+  if (error) {
+    return res.status(500).json({ error: error.message })
+  }
+
+  res.json(data)
+})
+
+app.delete('/api/basics/:id', async (req, res) => {
+  const { id } = req.params
+
+  const { error } = await supabase
+    .from('Basics')
+    .delete()
+    .eq('BasicID', id)
+
+  if (error) {
+    return res.status(500).json({ error: error.message })
+  }
+
+  res.json({ message: 'Auto poistettu' })
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
