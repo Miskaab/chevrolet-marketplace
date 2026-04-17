@@ -207,13 +207,34 @@ app.put('/api/basics/:id', async (req, res) => {
 app.delete('/api/basics/:id', async (req, res) => {
   const { id } = req.params
 
-  const { error } = await supabase
+  const { error: specError } = await supabase
+    .from('Specifications')
+    .delete()
+    .eq('BasicID', id)
+
+  if (specError) {
+    console.error('Specifications poistovirhe:', specError)
+    return res.status(500).json({ error: specError.message })
+  }
+
+  const { error: featureError } = await supabase
+    .from('Features')
+    .delete()
+    .eq('BasicID', id)
+
+  if (featureError) {
+    console.error('Features poistovirhe:', featureError)
+    return res.status(500).json({ error: featureError.message })
+  }
+
+  const { error: basicError } = await supabase
     .from('Basics')
     .delete()
     .eq('BasicID', id)
 
-  if (error) {
-    return res.status(500).json({ error: error.message })
+  if (basicError) {
+    console.error('Basics poistovirhe:', basicError)
+    return res.status(500).json({ error: basicError.message })
   }
 
   res.json({ message: 'Auto poistettu' })
