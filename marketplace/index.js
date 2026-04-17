@@ -148,13 +148,51 @@ app.post('/api/login', async (req, res) => {
   })
 })
 
-app.put('/api/basics/:id', async (req, res) => {
+app.get('/api/basics/:id', async (req, res) => {
   const { id } = req.params
-  const { model, price, mileage, year_model, color, engine, gearbox, drive_type, image_url } = req.body
 
   const { data, error } = await supabase
     .from('Basics')
-    .update({ model, price, mileage, year_model, color, engine, gearbox, drive_type, image_url })
+    .select('*')
+    .eq('BasicID', id)
+    .single()
+
+  if (error) {
+    return res.status(500).json({ error: error.message })
+  }
+
+  res.json(data)
+})
+
+app.put('/api/basics/:id', async (req, res) => {
+  const { id } = req.params
+  const {
+    registration_number,
+    engine,
+    gearbox,
+    mileage,
+    year_model,
+    drive_type,
+    color,
+    model,
+    price,
+    image_url
+  } = req.body
+
+  const { data, error } = await supabase
+    .from('Basics')
+    .update({
+      registration_number,
+      engine,
+      gearbox,
+      mileage,
+      year_model,
+      drive_type,
+      color,
+      model,
+      price,
+      image_url
+    })
     .eq('BasicID', id)
     .select()
     .single()
