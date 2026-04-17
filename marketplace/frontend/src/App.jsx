@@ -6,6 +6,7 @@ import Login from '/components/Login.jsx'
 import Register from '/components/Register.jsx'
 import logo from './logos/Kauppa.png'
 import Background from '/components/Background.jsx'
+import AdminDashboard from '/components/AdminDashboard.jsx'
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 
@@ -117,7 +118,16 @@ function App() {
     }
     return children
   }
-  
+
+  const deleteCar = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/basics/${id}`)
+      setCars(cars.filter((car) => car.BasicID !== id))
+    } catch (error) {
+      console.error('Virhe auton poistossa:', error)
+    }
+  }
+
 
   const filteredCars = cars.filter((car) => {
     const matchesSearch =
@@ -150,6 +160,12 @@ function App() {
               {user?.isAdmin && (
                 <NavLink to="/add-car" className={({ isActive }) => isActive ? 'active' : ''}>
                   Lisää auto
+                </NavLink>
+              )}
+
+              {user?.isAdmin && (
+                <NavLink to="/admin" className={({ isActive }) => isActive ? 'active' : ''}>
+                  Admin
                 </NavLink>
               )}
             </div>
@@ -189,6 +205,15 @@ function App() {
           path="/register"
           element={
             user ? <Navigate to="/" replace /> : <Register />
+          }
+        />
+        
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard cars={cars} onDelete={deleteCar} />
+            </AdminRoute>
           }
         />
 
