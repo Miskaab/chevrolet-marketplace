@@ -142,7 +142,8 @@ app.post('/api/login', async (req, res) => {
     token,
     user: {
       id: user.UserID,
-      username: user.username
+      username: user.username,
+      isAdmin: user.is_admin
     }
   })
 })
