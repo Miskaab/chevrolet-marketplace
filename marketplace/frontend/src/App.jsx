@@ -13,6 +13,12 @@ function App() {
   const [cars, setCars] = useState([])
   const [selectedCar, setSelectedCar] = useState(null)
   const [cart, setCart] = useState([])
+
+  const [search, setSearch] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+  const [maxMileage, setMaxMileage] = useState('')
+  const [minYear, setMinYear] = useState('')
+
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user')
     return savedUser ? JSON.parse(savedUser) : null
@@ -28,8 +34,13 @@ function App() {
     setCart(cart.filter(car => car.BasicID !== id))
   }
 
+  const clearCart = () => {
+    setCart([])
+  }
+
   const logout = () => {
     localStorage.removeItem('user')
+    localStorage.removeItem('token')
     setUser(null)
   }
 
@@ -44,17 +55,6 @@ function App() {
         })
     }
   }, [user])
-
-  const ProtectedRoute = ({ children }) => {
-    if (!user) {
-      return <Navigate to="/login" replace />
-    }
-    return children
-  }
-
-  const clearCart = () => {
-    setCart([])
-  }
 
   useEffect(() => {
     if (!user) return
@@ -79,7 +79,6 @@ function App() {
     const events = ['mousemove', 'keydown', 'click', 'scroll']
 
     events.forEach(e => window.addEventListener(e, resetTimer))
-
     resetTimer()
 
     return () => {
@@ -88,25 +87,53 @@ function App() {
     }
   }, [user])
 
-
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) return
 
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    const expiry = payload.exp * 1000
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const expiry = payload.exp * 1000
 
-    if (Date.now() > expiry) {
+      if (Date.now() > expiry) {
+        logout()
+      }
+    } catch (error) {
+      console.error('Virhe tokenin tarkistuksessa:', error)
       logout()
     }
   }, [])
 
-  const AdminRoute = ({ children }) => {
-    if (!user || !user.isAdmin) {
-      return <Navigate to="/" />
+  const ProtectedRoute = ({ children }) => {
+    if (!user) {
+      return <Navigate to="/login" replace />
     }
     return children
   }
+
+  const AdminRoute = ({ children }) => {
+    if (!user || !user.isAdmin) {
+      return <Navigate to="/" replace />
+    }
+    return children
+  }
+  
+
+  const filteredCars = cars.filter((car) => {
+    const matchesSearch =
+      car.model.toLowerCase().includes(search.toLowerCase())
+
+    const matchesPrice =
+      !maxPrice || Number(car.price) <= Number(maxPrice)
+
+    const matchesMileage =
+      !maxMileage || Number(car.mileage) <= Number(maxMileage)
+
+    const matchesYear =
+      !minYear || Number(car.year_model) >= Number(minYear)
+
+    return matchesSearch && matchesPrice && matchesMileage && matchesYear
+  })
 
   return (
     <div>
@@ -121,7 +148,9 @@ function App() {
               </NavLink>
 
               {user?.isAdmin && (
-                <NavLink to="/add-car">Lisää auto</NavLink>
+                <NavLink to="/add-car" className={({ isActive }) => isActive ? 'active' : ''}>
+                  Lisää auto
+                </NavLink>
               )}
             </div>
 
@@ -130,7 +159,10 @@ function App() {
             </div>
 
             <div className="nav-right">
-              <NavLink to="/cart" className={({ isActive }) => isActive ? 'active cart-link' : 'cart-link'}>
+              <NavLink
+                to="/cart"
+                className={({ isActive }) => isActive ? 'active cart-link' : 'cart-link'}
+              >
                 Ostoskori
                 {cart.length > 0 && (
                   <span className="cart-badge">{cart.length}</span>
@@ -160,14 +192,40 @@ function App() {
           }
         />
 
-
         <Route
           path="/"
           element={
             <ProtectedRoute>
               <div className="container">
+                <div className="filters">
+                  <input
+                    type="text"
+                    placeholder="Hae mallia..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Maksimi hinta"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Maksimi km"
+                    value={maxMileage}
+                    onChange={(e) => setMaxMileage(e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Vähintään vuosimalli"
+                    value={minYear}
+                    onChange={(e) => setMinYear(e.target.value)}
+                  />
+                </div>
+
                 <div className="car-list">
-                  {cars.map(car => (
+                  {filteredCars.map(car => (
                     <div
                       key={car.BasicID}
                       onClick={() => setSelectedCar(car)}
@@ -232,17 +290,24 @@ function App() {
           }
         />
 
-        <Route path="/add-car" element={
-          <AdminRoute>
-            <AddCar />
-          </AdminRoute>
-        } />
+        <Route
+          path="/add-car"
+          element={
+            <AdminRoute>
+              <AddCar />
+            </AdminRoute>
+          }
+        />
 
         <Route
           path="/cart"
           element={
             <ProtectedRoute>
-              <Cart cart={cart} removeFromCart={removeFromCart} clearCart={clearCart} />
+              <Cart
+                cart={cart}
+                removeFromCart={removeFromCart}
+                clearCart={clearCart}
+              />
             </ProtectedRoute>
           }
         />

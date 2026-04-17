@@ -576,3 +576,49 @@ textarea {
   background: #ff6a00;
   color: #fff;
 }
+.filters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+  background: rgba(10, 10, 10, 0.85);
+  border: 2px solid #ff6a00;
+  border-radius: 18px;
+  padding: 18px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.filters input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 106, 0, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.filters input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.filters input:focus {
+  border-color: #ff6a00;
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.35);
+}
+
+/* mobiili */
+@media (max-width: 1000px) {
+  .filters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}
