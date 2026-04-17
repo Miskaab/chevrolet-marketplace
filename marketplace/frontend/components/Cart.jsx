@@ -1,5 +1,20 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 function Cart({ cart, removeFromCart, clearCart }) {
+  const navigate = useNavigate()
+  const [removingId, setRemovingId] = useState(null)
+
   const total = cart.reduce((sum, car) => sum + Number(car.price), 0)
+
+  const handleRemove = (id) => {
+    setRemovingId(id)
+
+    setTimeout(() => {
+      removeFromCart(id)
+      setRemovingId(null)
+    }, 250)
+  }
 
   return (
     <div className="cart-container">
@@ -10,7 +25,10 @@ function Cart({ cart, removeFromCart, clearCart }) {
       ) : (
         <>
           {cart.map((car) => (
-            <div key={car.BasicID} className="cart-item">
+            <div
+              key={car.BasicID}
+              className={`cart-item ${removingId === car.BasicID ? 'removing' : ''}`}
+            >
               <div className="cart-item-left">
                 <div className="cart-item-image">
                   <img src={car.image_url} alt={car.model} />
@@ -26,7 +44,7 @@ function Cart({ cart, removeFromCart, clearCart }) {
 
               <button
                 className="remove-btn"
-                onClick={() => removeFromCart(car.BasicID)}
+                onClick={() => handleRemove(car.BasicID)}
               >
                 ✕
               </button>
@@ -35,9 +53,16 @@ function Cart({ cart, removeFromCart, clearCart }) {
 
           <div className="cart-summary">
             <h2>Yhteensä: {total}€</h2>
-            <button className="clear-cart-btn" onClick={clearCart}>
-              Tyhjennä ostoskori
-            </button>
+
+            <div className="cart-summary-buttons">
+              <button className="clear-cart-btn" onClick={clearCart}>
+                Tyhjennä ostoskori
+              </button>
+
+              <button className="checkout-btn" onClick={() => navigate('/checkout')}>
+                Siirry kassalle
+              </button>
+            </div>
           </div>
         </>
       )}

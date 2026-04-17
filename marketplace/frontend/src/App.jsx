@@ -342,6 +342,18 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute user={user}>
+              <div className="cart-container">
+                <h1>Kassa</h1>
+                <p>Tämä ei ole oikea sivu.</p>
+                <button className="checkout-btn">Maksa</button>
+              </div>
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
       </Routes>
