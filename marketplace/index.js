@@ -247,8 +247,12 @@ app.put('/api/specifications/:id', async (req, res) => {
     .from('Specifications')
     .update(req.body)
     .eq('BasicID', id)
+    .select()
+    .single()
 
-  if (error) return res.status(500).json(error)
+  if (error) {
+    return res.status(500).json({ error: error.message })
+  }
 
   res.json(data)
 })
@@ -260,8 +264,12 @@ app.put('/api/features/:id', async (req, res) => {
     .from('Features')
     .update({ notes: req.body.notes })
     .eq('BasicID', id)
+    .select()
+    .single()
 
-  if (error) return res.status(500).json(error)
+  if (error) {
+    return res.status(500).json({ error: error.message })
+  }
 
   res.json(data)
 })
