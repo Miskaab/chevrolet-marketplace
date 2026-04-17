@@ -11,6 +11,20 @@ import EditCar from '/components/EditCar.jsx'
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 
+function ProtectedRoute({ user, children }) {
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+  return children
+}
+
+function AdminRoute({ user, children }) {
+  if (!user || !user.isAdmin) {
+    return <Navigate to="/" replace />
+  }
+  return children
+}
+
 function App() {
   const [cars, setCars] = useState([])
   const [selectedCar, setSelectedCar] = useState(null)
@@ -46,6 +60,15 @@ function App() {
     setUser(null)
   }
 
+  const deleteCar = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/basics/${id}`)
+      setCars(prevCars => prevCars.filter(car => car.BasicID !== id))
+    } catch (error) {
+      console.error('Virhe auton poistossa:', error)
+    }
+  }
+
   useEffect(() => {
     if (user) {
       axios.get('http://localhost:3001/api/basics')
@@ -72,7 +95,6 @@ function App() {
 
     const resetTimer = () => {
       clearTimeout(timeout)
-
       timeout = setTimeout(() => {
         logoutUser()
       }, 10 * 60 * 1000)
@@ -80,12 +102,12 @@ function App() {
 
     const events = ['mousemove', 'keydown', 'click', 'scroll']
 
-    events.forEach(e => window.addEventListener(e, resetTimer))
+    events.forEach(event => window.addEventListener(event, resetTimer))
     resetTimer()
 
     return () => {
       clearTimeout(timeout)
-      events.forEach(e => window.removeEventListener(e, resetTimer))
+      events.forEach(event => window.removeEventListener(event, resetTimer))
     }
   }, [user])
 
@@ -106,42 +128,11 @@ function App() {
     }
   }, [])
 
-  const ProtectedRoute = ({ children }) => {
-    if (!user) {
-      return <Navigate to="/login" replace />
-    }
-    return children
-  }
-
-  const AdminRoute = ({ children }) => {
-    if (!user || !user.isAdmin) {
-      return <Navigate to="/" replace />
-    }
-    return children
-  }
-
-  const deleteCar = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3001/api/basics/${id}`)
-      setCars(cars.filter((car) => car.BasicID !== id))
-    } catch (error) {
-      console.error('Virhe auton poistossa:', error)
-    }
-  }
-
-
   const filteredCars = cars.filter((car) => {
-    const matchesSearch =
-      car.model.toLowerCase().includes(search.toLowerCase())
-
-    const matchesPrice =
-      !maxPrice || Number(car.price) <= Number(maxPrice)
-
-    const matchesMileage =
-      !maxMileage || Number(car.mileage) <= Number(maxMileage)
-
-    const matchesYear =
-      !minYear || Number(car.year_model) >= Number(minYear)
+    const matchesSearch = car.model.toLowerCase().includes(search.toLowerCase())
+    const matchesPrice = !maxPrice || Number(car.price) <= Number(maxPrice)
+    const matchesMileage = !maxMileage || Number(car.mileage) <= Number(maxMileage)
+    const matchesYear = !minYear || Number(car.year_model) >= Number(minYear)
 
     return matchesSearch && matchesPrice && matchesMileage && matchesYear
   })
@@ -159,15 +150,15 @@ function App() {
               </NavLink>
 
               {user?.isAdmin && (
-                <NavLink to="/add-car" className={({ isActive }) => isActive ? 'active' : ''}>
-                  Lisää auto
-                </NavLink>
-              )}
+                <>
+                  <NavLink to="/add-car" className={({ isActive }) => isActive ? 'active' : ''}>
+                    Lisää auto
+                  </NavLink>
 
-              {user?.isAdmin && (
-                <NavLink to="/admin" className={({ isActive }) => isActive ? 'active' : ''}>
-                  Admin
-                </NavLink>
+                  <NavLink to="/admin" className={({ isActive }) => isActive ? 'active' : ''}>
+                    Admin
+                  </NavLink>
+                </>
               )}
             </div>
 
@@ -210,27 +201,9 @@ function App() {
         />
 
         <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminDashboard cars={cars} onDelete={deleteCar} />
-            </AdminRoute>
-          }
-        />
-        
-        <Route
-          path="/edit-car/:id"
-          element={
-            <AdminRoute>
-              <EditCar />
-            </AdminRoute>
-          }
-        />
-
-        <Route
           path="/"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute user={user}>
               <div className="container">
                 <div className="filters">
                   <input
@@ -239,18 +212,21 @@ function App() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
+
                   <input
                     type="number"
                     placeholder="Maksimi hinta"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
                   />
+
                   <input
                     type="number"
                     placeholder="Maksimi km"
                     value={maxMileage}
                     onChange={(e) => setMaxMileage(e.target.value)}
                   />
+
                   <input
                     type="number"
                     placeholder="Vähintään vuosimalli"
@@ -301,11 +277,11 @@ function App() {
                         <div className="details-section">
                           <h3>Tekniset</h3>
                           <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
-                          <p><b>Teho:</b> {selectedCar.Specifications?.power}</p>
-                          <p><b>Huippunopeus:</b> {selectedCar.Specifications?.top_speed}</p>
-                          <p><b>Kulutus:</b> {selectedCar.Specifications?.fuel_consumption}</p>
-                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications?.acceleration}</p>
-                          <p><b>Paino:</b> {selectedCar.Specifications?.weight}</p>
+                          <p><b>Teho:</b> {selectedCar.Specifications?.[0]?.power || 'Ei tietoa'}</p>
+                          <p><b>Huippunopeus:</b> {selectedCar.Specifications?.[0]?.top_speed || 'Ei tietoa'}</p>
+                          <p><b>Kulutus:</b> {selectedCar.Specifications?.[0]?.fuel_consumption || 'Ei tietoa'}</p>
+                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications?.[0]?.acceleration || 'Ei tietoa'}</p>
+                          <p><b>Paino:</b> {selectedCar.Specifications?.[0]?.weight || 'Ei tietoa'}</p>
                         </div>
 
                         <div className="details-section">
@@ -328,8 +304,26 @@ function App() {
         <Route
           path="/add-car"
           element={
-            <AdminRoute>
+            <AdminRoute user={user}>
               <AddCar />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute user={user}>
+              <AdminDashboard cars={cars} onDelete={deleteCar} />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/edit-car/:id"
+          element={
+            <AdminRoute user={user}>
+              <EditCar />
             </AdminRoute>
           }
         />
@@ -337,7 +331,7 @@ function App() {
         <Route
           path="/cart"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute user={user}>
               <Cart
                 cart={cart}
                 removeFromCart={removeFromCart}
