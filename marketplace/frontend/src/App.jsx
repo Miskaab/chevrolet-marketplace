@@ -11,6 +11,7 @@ import EditCar from '/components/EditCar.jsx'
 import Checkout from '/components/CheckOut.jsx'
 import Success from '/components/Succes.jsx'
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster, toast } from 'react-hot-toast'
 import './index.css'
 
 function ProtectedRoute({ user, children }) {
@@ -45,8 +46,14 @@ function App() {
 
   const addToCart = (car) => {
     const found = cart.find(item => item.BasicID === car.BasicID)
-    if (found) return
+
+    if (found) {
+      toast.error('Auto on jo ostoskorissa')
+      return
+    }
+
     setCart([...cart, car])
+    toast.success('Lisätty ostoskoriin')
   }
 
   const removeFromCart = (id) => {
@@ -64,11 +71,16 @@ function App() {
   }
 
   const deleteCar = async (id) => {
+    const confirmDelete = window.confirm('Haluatko varmasti poistaa tämän auton?')
+    if (!confirmDelete) return
+
     try {
       await axios.delete(`http://localhost:3001/api/basics/${id}`)
       setCars(prevCars => prevCars.filter(car => car.BasicID !== id))
+      toast.success('Auto poistettu')
     } catch (error) {
       console.error('Virhe auton poistossa:', error)
+      toast.error('Poisto epäonnistui')
     }
   }
 
@@ -147,6 +159,16 @@ function App() {
 
   return (
     <div>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#111',
+            color: '#fff',
+            border: '2px solid #ff6a00'
+          }
+        }}
+      />
       <Background />
 
       {user && (

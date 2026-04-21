@@ -38,7 +38,7 @@ function AddCar() {
     axios.post('http://localhost:3001/api/basics', basicData)
       .then(response => {
 
-        const newCarId = response.data.BasicID; 
+        const newCarId = response.data.BasicID;
 
         const specData = {
           BasicID: newCarId,
@@ -48,8 +48,8 @@ function AddCar() {
           fuel_consumption: fuelConsumption,
           weight: weight
         }
-        
-        
+
+
         return axios.post('http://localhost:3001/api/specifications', specData)
           .then(() => {
             return { BasicID: newCarId };
@@ -60,10 +60,23 @@ function AddCar() {
           notes: notes,
           BasicID: data.BasicID
         });
-        
+
         alert("Julkaisu Onnistui");
       });
   }
+
+  const [formData, setFormData] = useState({
+    registration_number: '',
+    engine: '',
+    gearbox: '',
+    mileage: '',
+    year_model: '',
+    drive_type: '',
+    color: '',
+    model: '',
+    price: '',
+    image_url: ''
+  })
 
   return (
     <div>
@@ -91,6 +104,18 @@ function AddCar() {
         <textarea placeholder="Lisätiedot" value={notes} onChange={(event) => setNotes(event.target.value)} />
 
         <button type="submit">Julkaise</button>
+        <input
+          name="image_url"
+          placeholder="Kuvan URL"
+          value={formData.image_url}
+          onChange={handleChange}
+        />
+
+        {formData.image_url && (
+          <div className="image-preview">
+            <img src={formData.image_url} alt="Esikatselu" />
+          </div>
+        )}
       </form>
     </div>
   );

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 function Checkout({ cart, clearCart }) {
   const navigate = useNavigate()
+  const [paymentMethod, setPaymentMethod] = useState('card')
 
   const [formData, setFormData] = useState({
     name: '',
@@ -24,6 +25,7 @@ function Checkout({ cart, clearCart }) {
     e.preventDefault()
     clearCart()
     navigate('/success')
+    toast.success('Tilaus vahvistettu')
   }
 
   return (
@@ -68,6 +70,43 @@ function Checkout({ cart, clearCart }) {
         />
 
         <h2>Yhteensä: {total}€</h2>
+
+        <h3>Maksutapa</h3>
+
+        <div className="payment-methods">
+          <label className={`payment-option ${paymentMethod === 'card' ? 'active' : ''}`}>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="card"
+              checked={paymentMethod === 'card'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            Korttimaksu
+          </label>
+
+          <label className={`payment-option ${paymentMethod === 'invoice' ? 'active' : ''}`}>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="invoice"
+              checked={paymentMethod === 'invoice'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            Lasku
+          </label>
+
+          <label className={`payment-option ${paymentMethod === 'paypal' ? 'active' : ''}`}>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="paypal"
+              checked={paymentMethod === 'paypal'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            PayPal
+          </label>
+        </div>
 
         <button type="submit" className="checkout-btn">
           Vahvista tilaus
