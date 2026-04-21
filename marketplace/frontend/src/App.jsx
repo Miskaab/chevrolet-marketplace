@@ -36,6 +36,7 @@ function App() {
   const [maxPrice, setMaxPrice] = useState('')
   const [maxMileage, setMaxMileage] = useState('')
   const [minYear, setMinYear] = useState('')
+  const [loading, setLoading] = useState(true)
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user')
@@ -73,12 +74,17 @@ function App() {
 
   useEffect(() => {
     if (user) {
+      setLoading(true)
+
       axios.get('http://localhost:3001/api/basics')
         .then(response => {
           setCars(response.data)
         })
         .catch(error => {
           console.error('Virhe autojen haussa:', error)
+        })
+        .finally(() => {
+          setLoading(false)
         })
     }
   }, [user])
@@ -237,29 +243,36 @@ function App() {
                   />
                 </div>
 
-                <div className="car-list">
-                  {filteredCars.map(car => (
-                    <div
-                      key={car.BasicID}
-                      onClick={() => setSelectedCar(car)}
-                      className="car-card"
-                    >
-                      <div className="car-image">
-                        <img src={car.image_url} alt={car.model} />
-                      </div>
-                      <h3>{car.model} - {car.price}€</h3>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          addToCart(car)
-                        }}
+                {loading ? (
+                  <div className="spinner-wrapper">
+                    <div className="spinner"></div>
+                    <p>Ladataan autoja...</p>
+                  </div>
+                ) : (
+                  <div className="car-list">
+                    {filteredCars.map(car => (
+                      <div
+                        key={car.BasicID}
+                        onClick={() => setSelectedCar(car)}
+                        className="car-card"
                       >
-                        Lisää ostoskoriin
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                        <div className="car-image">
+                          <img src={car.image_url} alt={car.model} />
+                        </div>
+                        <h3>{car.model} - {car.price}€</h3>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            addToCart(car)
+                          }}
+                        >
+                          Lisää ostoskoriin
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {selectedCar && (
                   <div className="overlay" onClick={() => setSelectedCar(null)}>
@@ -344,7 +357,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-  
+
         <Route
           path="/checkout"
           element={
