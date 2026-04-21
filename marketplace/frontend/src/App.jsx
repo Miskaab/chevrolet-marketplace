@@ -10,6 +10,7 @@ import AdminDashboard from '/components/AdminDashboard.jsx'
 import EditCar from '/components/EditCar.jsx'
 import Checkout from '/components/CheckOut.jsx'
 import Success from '/components/Succes.jsx'
+import Favorites from '/components/Favourites.jsx'
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster, toast } from 'react-hot-toast'
 import './index.css'
@@ -44,6 +45,11 @@ function App() {
     return savedUser ? JSON.parse(savedUser) : null
   })
 
+  const [favorites, setFavorites] = useState(() => {
+    const savedFavorites = localStorage.getItem('favorites')
+    return savedFavorites ? JSON.parse(savedFavorites) : []
+  })
+
   const addToCart = (car) => {
     const found = cart.find(item => item.BasicID === car.BasicID)
 
@@ -62,6 +68,23 @@ function App() {
 
   const clearCart = () => {
     setCart([])
+  }
+
+  const addToFavorites = (car) => {
+    const found = favorites.find(item => item.BasicID === car.BasicID)
+
+    if (found) {
+      toast.error('Auto on jo suosikeissa')
+      return
+    }
+
+    setFavorites([...favorites, car])
+    toast.success('Lisätty suosikkeihin')
+  }
+
+  const removeFromFavorites = (id) => {
+    setFavorites(favorites.filter(car => car.BasicID !== id))
+    toast.success('Poistettu suosikeista')
   }
 
   const logout = () => {
@@ -100,6 +123,10 @@ function App() {
         })
     }
   }, [user])
+
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites))
+  }, [favorites])
 
   useEffect(() => {
     if (!user) return
@@ -169,6 +196,7 @@ function App() {
           }
         }}
       />
+
       <Background />
 
       {user && (
@@ -207,6 +235,13 @@ function App() {
                 )}
               </NavLink>
 
+              <NavLink
+                to="/favorites"
+                className={({ isActive }) => isActive ? 'active' : ''}
+              >
+                Suosikit ({favorites.length})
+              </NavLink>
+
               <button onClick={logout}>
                 Kirjaudu ulos ({user.username})
               </button>
@@ -218,16 +253,12 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={
-            user ? <Navigate to="/" replace /> : <Login setUser={setUser} />
-          }
+          element={user ? <Navigate to="/" replace /> : <Login setUser={setUser} />}
         />
 
         <Route
           path="/register"
-          element={
-            user ? <Navigate to="/" replace /> : <Register />
-          }
+          element={user ? <Navigate to="/" replace /> : <Register />}
         />
 
         <Route
@@ -270,29 +301,47 @@ function App() {
                     <div className="spinner"></div>
                     <p>Ladataan autoja...</p>
                   </div>
+                ) : filteredCars.length === 0 ? (
+                  <p>Ei hakutuloksia.</p>
                 ) : (
                   <div className="car-list">
-                    {filteredCars.map(car => (
-                      <div
-                        key={car.BasicID}
-                        onClick={() => setSelectedCar(car)}
-                        className="car-card"
-                      >
-                        <div className="car-image">
-                          <img src={car.image_url} alt={car.model} />
-                        </div>
-                        <h3>{car.model} - {car.price}€</h3>
+                    {filteredCars.map(car => {
+                      const isFavorite = favorites.some(f => f.BasicID === car.BasicID)
 
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            addToCart(car)
-                          }}
+                      return (
+                        <div
+                          key={car.BasicID}
+                          onClick={() => setSelectedCar(car)}
+                          className="car-card"
                         >
-                          Lisää ostoskoriin
-                        </button>
-                      </div>
-                    ))}
+                          <div className="car-image">
+                            <img src={car.image_url} alt={car.model} />
+                          </div>
+
+                          <h3>{car.model} - {car.price}€</h3>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              addToCart(car)
+                            }}
+                          >
+                            Lisää ostoskoriin
+                          </button>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              isFavorite
+                                ? removeFromFavorites(car.BasicID)
+                                : addToFavorites(car)
+                            }}
+                          >
+                            {isFavorite ? '💔 Poista' : '❤️ Lisää suokikiksi'}
+                          </button>
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
 
@@ -316,11 +365,11 @@ function App() {
                         <div className="details-section">
                           <h3>Tekniset</h3>
                           <p><b>Vetotapa:</b> {selectedCar.drive_type}</p>
-                          <p><b>Teho:</b> {selectedCar.Specifications.power}</p>
-                          <p><b>Huippunopeus:</b> {selectedCar.Specifications.top_speed}</p>
-                          <p><b>Kulutus:</b> {selectedCar.Specifications.fuel_consumption}</p>
-                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications.acceleration}</p>
-                          <p><b>Paino:</b> {selectedCar.Specifications.weight}</p>
+                          <p><b>Teho:</b> {selectedCar.Specifications?.[0]?.power || 'Ei tietoa'}</p>
+                          <p><b>Huippunopeus:</b> {selectedCar.Specifications?.[0]?.top_speed || 'Ei tietoa'}</p>
+                          <p><b>Kulutus:</b> {selectedCar.Specifications?.[0]?.fuel_consumption || 'Ei tietoa'}</p>
+                          <p><b>Kiihtyvyys:</b> {selectedCar.Specifications?.[0]?.acceleration || 'Ei tietoa'}</p>
+                          <p><b>Paino:</b> {selectedCar.Specifications?.[0]?.weight || 'Ei tietoa'}</p>
                         </div>
 
                         <div className="details-section">
@@ -394,6 +443,19 @@ function App() {
           element={
             <ProtectedRoute user={user}>
               <Success />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/favorites"
+          element={
+            <ProtectedRoute user={user}>
+              <Favorites
+                favorites={favorites}
+                removeFromFavorites={removeFromFavorites}
+                addToCart={addToCart}
+              />
             </ProtectedRoute>
           }
         />
