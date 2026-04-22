@@ -337,7 +337,7 @@ function App() {
                                 : addToFavorites(car)
                             }}
                           >
-                            {isFavorite ? '💔 Poista' : '❤️ Lisää suokikiksi'}
+                            {isFavorite ? '💔 Poista' : '❤️ Lisää suokiksi'}
                           </button>
                         </div>
                       )
