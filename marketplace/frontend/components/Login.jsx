@@ -17,8 +17,16 @@ function Login({ setUser }) {
         password
       })
 
-      localStorage.setItem('user', JSON.stringify(res.data.user))
-      setUser(res.data.user)
+      localStorage.setItem('token', res.data.token)
+
+      const userData = {
+        id: res.data.user.id,
+        username: res.data.user.username,
+        isAdmin: res.data.user.is_admin
+      }
+
+      localStorage.setItem('user', JSON.stringify(userData))
+      setUser(userData)
     } catch (err) {
       alert(err.response?.data?.error || 'Virhe kirjautumisessa')
     }
